@@ -34,12 +34,18 @@ except ImportError as e:
 # Configuration
 @dataclass
 class Config:
+    try:
+        with open("config.json", "r") as f:
+            data_load = json.load(f)
+    except Exception as e:
+        print(f"Warning: Could not load config.json ({e}), using defaults.")
+        data_load = {}
     # Porcupine wake word settings
     load_dotenv()
     PORCUPINE_ACCESS_KEY = os.getenv("PORCUPINE_ACCESS_KEY") # Get from .env file
     WAKE_WORD = "jarvis"
     SENSITIVITY = 0.8
-    KEYWORD_PATH = "models/Jarvis_en_linux_v3_0_0.ppn"  # Write your own model path or remove the subsequent line of code
+    KEYWORD_PATH_PORCUPINE = data_load["porcupine"]["keyword_path"]  # Write your own model path or remove the subsequent line of code
     
     # Audio settings
     SAMPLE_RATE = 16000
@@ -52,7 +58,7 @@ class Config:
     WHISPER_COMPUTE_TYPE = "int8"  # int8 for CPU, float16 for GPU
     
     # Llama settings
-    LLAMA_MODEL_PATH = "models/llama-2-7b-chat.Q4_K_M.gguf"     # Write your own model
+    LLAMA_MODEL_PATH = data_load["llama"]["model_path"]     # Write your own model
     LLAMA_N_CTX = 2048
     LLAMA_N_THREADS = 4
     
@@ -64,7 +70,6 @@ class Config:
     TASKS_DIR = Path.home() / ".config/jarvis/tasks"
     LOG_DIR = Path.home() / ".local/share/jarvis/logs"
     CACHE_DIR = Path.home() / ".cache/jarvis"
-    KEYWORD_PATH = "models/Jarvis_en_linux_v3_0_0.ppn"
 
 class TaskType(Enum):
     SYSTEM = "system"
@@ -428,7 +433,7 @@ class JarvisAssistant:
         try:
             self.porcupine = pvporcupine.create(
             access_key=self.config.PORCUPINE_ACCESS_KEY,
-            keyword_paths=[self.config.KEYWORD_PATH],  # load your custom ppn
+            keyword_paths=[self.config.KEYWORD_PATH_PORCUPINE],  # load your custom ppn
             sensitivities=[self.config.SENSITIVITY]
 )
             print(f"Porcupine initialized for wake word: {self.config.WAKE_WORD}")
