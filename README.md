@@ -81,7 +81,7 @@ git clone https://github.com/Mr-Mysterious001/Jarvis.git
 cd Jarvis
 chmod +x setup.sh
 ./setup.sh
-
+```
 ---
 
 ## 🚀 Usage
@@ -91,7 +91,7 @@ Once installed and configured:
 ### 1. Start Jarvis
 ```bash
 python3 jarvis.py
-
+```
 ---
 
 ## 🙌 Contributing
@@ -112,9 +112,11 @@ Contributions of all kinds are welcome — whether you’re fixing bugs, writing
 2. Create a new branch:  
    ```bash
    git checkout -b feature-name
+   ```
 3. Make your changes and commit:
     ```bash
     git commit -m "Add: feature description"
+    ```
 4. Push to your fork and create a pull request
 
 ---
