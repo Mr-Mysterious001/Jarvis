@@ -42,8 +42,8 @@ class Config:
         data_load = {}
     # Porcupine wake word settings
     PORCUPINE_ACCESS_KEY = data_load["porcupine"]["access_key"] # Get from .env file
-    WAKE_WORD = "jarvis"
-    SENSITIVITY = 0.8
+    WAKE_WORD = data_load["porcupine"]["wake_word"]  # e.g., "jarvis"
+    SENSITIVITY = data_load["porcupine"]["sensitivity"]  # 0 to 1
     KEYWORD_PATH_PORCUPINE = data_load["porcupine"]["keyword_path"]  # Write your own model path or remove the subsequent line of code
     
     # Audio settings
@@ -54,7 +54,7 @@ class Config:
     # Whisper settings
     WHISPER_MODEL = data_load["whisper"]["model"]  # Options: tiny, base, small, medium, large
     WHISPER_DEVICE = data_load["whisper"]["device"]  # or "cuda" if you have GPU
-    WHISPER_COMPUTE_TYPE = data_load["whisper"]["computer_type"]  # int8 for CPU, float16 for GPU
+    WHISPER_COMPUTE_TYPE = data_load["whisper"]["compute_type"]  # int8 for CPU, float16 for GPU
     WHISPER_LANGUAGE = data_load["whisper"]["language"]  # e.g., "en"
     
     # Llama settings
@@ -63,8 +63,9 @@ class Config:
     LLAMA_N_THREADS = 4
     
     # Piper TTS settings
-    PIPER_MODEL = data_load["whisper"]["voice"]
+    PIPER_MODEL = data_load["piper"]["voice"]
     PIPER_VOICE_PATH = Path.home() / ".local/share/piper/voices"
+    PIPER_SPEED = data_load["piper"]["speed"]  # 1.0 is normal speed
     
     # System settings
     TASKS_DIR = Path.home() / ".config/jarvis/tasks"
@@ -379,7 +380,8 @@ class TTSEngine:
             cmd = [
                 'piper',
                 '--model', self.config.PIPER_MODEL,
-                '--output-raw'
+                '--output-raw',
+                '--length-scale', str(1.0 / self.config.PIPER_SPEED)
             ]
             
             # Pipe text to piper and play with aplay
