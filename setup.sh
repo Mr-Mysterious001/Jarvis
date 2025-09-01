@@ -87,21 +87,21 @@ print_status "Installing Piper TTS..."
 pip install piper-tts
 
 # Download Piper voice model
-print_status "Downloading Piper voice model..."
 PIPER_VOICE_DIR="$HOME/.local/share/piper/voices"
 mkdir -p "$PIPER_VOICE_DIR"
+print_status "Download Piper TTS voice model and store in $HOME/.local/share/piper/voices..."
 
 # Download a good quality English voice
-cd "$PIPER_VOICE_DIR"
-if [ ! -f "en_US-amy-medium.onnx" ]; then
-    wget https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/amy/medium/en_US-amy-medium.onnx
-    wget https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/amy/medium/en_US-amy-medium.onnx.json
-fi
+# cd "$PIPER_VOICE_DIR"
+# if [ ! -f "en_US-amy-medium.onnx" ]; then
+#     wget https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/amy/medium/en_US-amy-medium.onnx
+#     wget https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/amy/medium/en_US-amy-medium.onnx.json
+# fi
 cd "$PROJECT_DIR"
 
 # Download Whisper model
-print_status "Downloading Whisper model..."
-python -c "from faster_whisper import WhisperModel; WhisperModel('base', device='cpu', compute_type='int8')"
+print_status "Download Whisper model and store in $PROJECT_DIR/models. Run this command:"
+echo "python -c \"from faster_whisper import WhisperModel; WhisperModel('base', device='cpu', compute_type='int8')\""
 
 # Create directory structure
 print_status "Creating directory structure..."
@@ -111,15 +111,15 @@ mkdir -p "$HOME/.cache/jarvis"
 mkdir -p "$PROJECT_DIR/models"
 
 # Download Llama 2 model
-print_status "Downloading Llama 2 7B model (this may take a while)..."
-cd "$PROJECT_DIR/models"
+print_status "Download Llama model and store it in $PROJECT_DIR/models/"
 
-if [ ! -f "llama-2-7b-chat.Q4_K_M.gguf" ]; then
-    print_warning "Downloading Llama 2 7B model (3.8GB)..."
-    wget https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/resolve/main/llama-2-7b-chat.Q4_K_M.gguf
-else
-    print_status "Llama 2 model already exists, skipping download"
-fi
+
+# if [ ! -f "llama-2-7b-chat.Q4_K_M.gguf" ]; then
+#     print_warning "Downloading Llama 2 7B model (3.8GB)..."
+#     wget https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/resolve/main/llama-2-7b-chat.Q4_K_M.gguf
+# else
+#     print_status "Llama 2 model already exists, skipping download"
+# fi
 
 cd "$PROJECT_DIR"
 
@@ -150,7 +150,8 @@ cat > config.json << 'EOF'
   "porcupine": {
     "access_key": "YOUR_PORCUPINE_ACCESS_KEY",
     "wake_word": "jarvis",
-    "sensitivity": 0.5
+    "keyword_path": "YOUR_PORCUPINE_KEYWORD_PATH",
+    "sensitivity": 0.8
   },
   "whisper": {
     "model": "base",
@@ -159,13 +160,13 @@ cat > config.json << 'EOF'
     "language": "en"
   },
   "llama": {
-    "model_path": "models/llama-2-7b-chat.Q4_K_M.gguf",
+    "model_path": "YOUR_LLAMA_MODEL_PATH",
     "n_ctx": 2048,
     "n_threads": 4,
     "temperature": 0.1
   },
   "piper": {
-    "voice": "en_US-lessac-medium",
+    "voice": "YOUR_PIPER_VOICE",
     "speed": 1.0
   },
   "audio": {
@@ -198,7 +199,7 @@ if grep -q "YOUR_PORCUPINE_ACCESS_KEY" config.json; then
     echo "1. Get your free access key from:"
     echo "   https://console.picovoice.ai/"
     echo ""
-    echo "2. Update the access_key in config.json"
+    echo "2. Update the access_key, model paths and piper voice in config.json"
     echo ""
     echo "=================================================="
     exit 1
@@ -210,6 +211,12 @@ python jarvis.py
 EOF
 
 chmod +x launch_jarvis.sh
+
+#Copying task files
+echo "Copying example task files..."
+cp -r after_install/tasks/* "$HOME/.config/jarvis/tasks/"
+echo "Task files copied to $HOME/.config/jarvis/tasks/"
+
 
 # Create setup completion script
 print_status "Creating setup completion script..."
@@ -244,8 +251,8 @@ echo "  ~/.config/jarvis/tasks/    - Task definitions"
 echo "  ~/.local/share/jarvis/logs/ - Log files"
 echo "  ~/.cache/jarvis/           - Cache files"
 echo ""
-echo "Models downloaded:"
-echo "  models/llama-2-7b-chat.Q4_K_M.gguf - Llama 2 7B"
+echo "Download models and store in the following locations:"
+echo "   /models/                 - Llama 2 and porcupine model"
 echo "  ~/.cache/whisper/           - Whisper base model"
 echo "  ~/.local/share/piper/voices/ - Piper TTS voice"
 echo ""
