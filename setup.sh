@@ -79,8 +79,7 @@ pip install \
     faster-whisper \
     llama-cpp-python \
     numpy \
-    SpeechRecognition \
-    dotenv
+    SpeechRecognition 
 
 # Install Piper TTS
 print_status "Installing Piper TTS..."

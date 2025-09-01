@@ -25,10 +25,10 @@ try:
     import pyaudio
     from faster_whisper import WhisperModel
     from llama_cpp import Llama
-    from dotenv import load_dotenv
+
 except ImportError as e:
     print(f"Missing dependency: {e}")
-    print("Install with: pip install pvporcupine pyaudio faster-whisper llama-cpp-python dotenv")
+    print("Install with: pip install pvporcupine pyaudio faster-whisper llama-cpp-python")
     sys.exit(1)
 
 # Configuration
@@ -41,8 +41,7 @@ class Config:
         print(f"Warning: Could not load config.json ({e}), using defaults.")
         data_load = {}
     # Porcupine wake word settings
-    load_dotenv()
-    PORCUPINE_ACCESS_KEY = os.getenv("PORCUPINE_ACCESS_KEY") # Get from .env file
+    PORCUPINE_ACCESS_KEY = data_load["porcupine"]["access_key"] # Get from .env file
     WAKE_WORD = "jarvis"
     SENSITIVITY = 0.8
     KEYWORD_PATH_PORCUPINE = data_load["porcupine"]["keyword_path"]  # Write your own model path or remove the subsequent line of code
@@ -50,12 +49,13 @@ class Config:
     # Audio settings
     SAMPLE_RATE = 16000
     FRAME_LENGTH = 512
-    AUDIO_DEVICE_INDEX = 5  # None for default device
+    AUDIO_DEVICE_INDEX = None  # None for default device
     
     # Whisper settings
-    WHISPER_MODEL = "base"  # Options: tiny, base, small, medium, large
-    WHISPER_DEVICE = "cpu"  # or "cuda" if you have GPU
-    WHISPER_COMPUTE_TYPE = "int8"  # int8 for CPU, float16 for GPU
+    WHISPER_MODEL = data_load["whisper"]["model"]  # Options: tiny, base, small, medium, large
+    WHISPER_DEVICE = data_load["whisper"]["device"]  # or "cuda" if you have GPU
+    WHISPER_COMPUTE_TYPE = data_load["whisper"]["computer_type"]  # int8 for CPU, float16 for GPU
+    WHISPER_LANGUAGE = data_load["whisper"]["language"]  # e.g., "en"
     
     # Llama settings
     LLAMA_MODEL_PATH = data_load["llama"]["model_path"]     # Write your own model
@@ -63,7 +63,7 @@ class Config:
     LLAMA_N_THREADS = 4
     
     # Piper TTS settings
-    PIPER_MODEL = "en_US-amy-medium"
+    PIPER_MODEL = data_load["whisper"]["voice"]
     PIPER_VOICE_PATH = Path.home() / ".local/share/piper/voices"
     
     # System settings
@@ -529,7 +529,7 @@ class JarvisAssistant:
             return ""
         
         try:
-            segments, _ = self.whisper_model.transcribe(audio, beam_size=5, language="en")
+            segments, _ = self.whisper_model.transcribe(audio, beam_size=5, language=self.config.WHISPER_LANGUAGE)
             text = " ".join([segment.text for segment in segments]).strip()
             print(f"Transcribed: {text}")
             return text
