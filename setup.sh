@@ -213,7 +213,7 @@ chmod +x launch_jarvis.sh
 
 #Copying task files
 echo "Copying example task files..."
-cp -r after_install/tasks/* "$HOME/.config/jarvis/tasks/"
+cp -r tasks/* "$HOME/.config/jarvis/tasks/"
 echo "Task files copied to $HOME/.config/jarvis/tasks/"
 
 
@@ -251,7 +251,7 @@ echo "  ~/.local/share/jarvis/logs/ - Log files"
 echo "  ~/.cache/jarvis/           - Cache files"
 echo ""
 echo "Download models and store in the following locations:"
-echo "   /models/                 - Llama 2 and porcupine model"
+echo "   models/                 - Llama 2 and porcupine model"
 echo "  ~/.cache/whisper/           - Whisper base model"
 echo "  ~/.local/share/piper/voices/ - Piper TTS voice"
 echo ""
