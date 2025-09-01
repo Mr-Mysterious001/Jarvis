@@ -1,0 +1,30 @@
+{
+  "porcupine": {
+    "access_key": "quJFLoJWti+7RYZPPKfxYbKTKpEFrdMfhDxVJejWkLEAtLi1I39bww==",
+    "wake_word": "jarvis",
+    "keyword_path": "models/Jarvis_en_linux_v3_0_0.ppn",
+    "sensitivity": 0.8
+  },
+  "whisper": {
+    "model": "base",
+    "device": "cpu",
+    "compute_type": "int8",
+    "language": "en"
+  },
+  "llama": {
+    "model_path": "models/llama-2-7b-chat.Q4_K_M.gguf",
+    "n_ctx": 2048,
+    "n_threads": 4,
+    "temperature": 0.1
+  },
+  "piper": {
+    "voice": "en_US-amy-medium",
+    "speed": 1.0
+  },
+  "audio": {
+    "sample_rate": 16000,
+    "channels": 1,
+    "chunk_size": 512,
+    "record_seconds": 5
+  }
+}
