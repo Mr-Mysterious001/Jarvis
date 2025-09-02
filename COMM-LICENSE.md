@@ -1,7 +1,3 @@
-Here’s a clean, professional `COMM-LICENSE.md` you can drop directly into your Jarvis repo alongside the `LICENSE` (GPL v3). It makes the dual-license model crystal clear:
-
----
-
 # Commercial License for Jarvis
 
 Jarvis is distributed under a **dual-license model**:
